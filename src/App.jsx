@@ -7,6 +7,8 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import useAuth from "./useAuth";
 import { db } from "./firebase";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
+import logo from "./assets/logo.png";
+import googleLogo from "./assets/google.png";
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -39,7 +41,7 @@ function App() {
       <Toaster />
       <header className="bg-slate-600 text-white p-4 flex justify-between items-center w-full">
         {/* Replace h1 with logo image */}
-        <img src="./src/assets/logo.png" alt="To-Do App Logo" className="h-12" />
+        <img src={logo} alt="To-Do App Logo" className="h-8 md:h-12" />
 
         {user ? (
           <div className="flex items-center gap-4">
@@ -61,7 +63,7 @@ function App() {
             onClick={loginWithGoogle}
             className="bg-white text-black px-4 py-2 rounded-md flex items-center gap-2"
           >
-            <img src="./src/assets/google.png" alt="Google Logo" className="w-10 h-8" />
+            <img src={googleLogo} alt="Google Logo" className="w-10 h-8" />
             Login with Google
           </button>
         )}
