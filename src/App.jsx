@@ -1,18 +1,38 @@
 import { useState, useEffect } from "react";
 import CreateTask from "./components/CreateTask";
 import ListTasks from "./components/ListTasks";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import useAuth from "./useAuth";
+import { db } from "./firebase";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
 
 function App() {
   const [tasks, setTasks] = useState([]);
   const { user, loginWithGoogle, logout } = useAuth();
 
   useEffect(() => {
-    setTasks(JSON.parse(localStorage.getItem("tasks")) || []);
-  }, []);
+    if (!user) {
+      setTasks([]);
+      return;
+    }
+
+    const q = query(collection(db, "tasks"), where("userId", "==", user.uid));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const taskList = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      console.log("Fetched tasks for user:", user.uid, taskList);
+      setTasks(taskList);
+    }, (error) => {
+      console.error("Firestore error:", error);
+      toast.error("Failed to fetch tasks. Check permissions.");
+    });
+
+    return () => unsubscribe();
+  }, [user]);
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -39,9 +59,9 @@ function App() {
           // Login button with Google logo
           <button
             onClick={loginWithGoogle}
-            className="bg-green-500 px-4 py-2 rounded-md text-white flex items-center gap-2"
+            className="bg-white text-black px-4 py-2 rounded-md flex items-center gap-2"
           >
-            <img src="./src/assets/google.png" alt="Google Logo" className="w-5 h-5" />
+            <img src="./src/assets/google.png" alt="Google Logo" className="w-10 h-8" />
             Login with Google
           </button>
         )}
@@ -50,8 +70,8 @@ function App() {
 
       
       {user ? (
-        <div className="bg-slate-100 w-screen h-screen flex flex-col items-center p-3 gap-16 pt-32">
-          <CreateTask tasks={tasks} setTasks={setTasks} />
+        <div className="bg-slate-100 min-h-screen w-full flex flex-col items-center p-3 gap-8 md:gap-16 pt-20 md:pt-32">
+          <CreateTask tasks={tasks} setTasks={setTasks} user={user} />
           <ListTasks tasks={tasks} setTasks={setTasks} />
         </div>
       ) : (

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import toast from "react-hot-toast";
+import { db } from "../firebase";
+import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 
 const ListTasks = ({tasks, setTasks}) => {
    const [todos, setTodos] = useState([]);
@@ -22,7 +24,7 @@ const ListTasks = ({tasks, setTasks}) => {
    const statuses = ["todo","inProgress","closed"]
    
     return (
-    <div className="flex gap-16">
+    <div className="flex flex-col md:flex-row gap-8 md:gap-16">
         {statuses.map((status,index) => 
             (<Section
              key={index} 
@@ -66,19 +68,15 @@ const   Section =({status,tasks,setTasks,todos,inProgress,closed}) => {
     tasksToMap = closed;
  }
 
-const addItemToSection = (id)=>{
-   setTasks(prev =>{
-   
-    const mTasks = prev.map(t=>{
-        if(t.id == id){
-            return {...t, status: status}
-        }
-        return t
-    })
-     localStorage.setItem("tasks",JSON.stringify(mTasks));
+const addItemToSection = async (id)=>{
+   try {
+     const taskDoc = doc(db, "tasks", id);
+     await updateDoc(taskDoc, { status: status });
      toast("Task Status changed",{icon:"👍"});
-    return mTasks;
-   })
+   } catch (error) {
+     console.error("Error updating task status:", error);
+     toast.error("Failed to update status");
+   }
 };
 
     return ( 
@@ -117,12 +115,14 @@ const  Header =({text,bg,count}) => {
     
 console.log(isDragging);
 
-    const handleRemove = (id) => {
-        console.log(id);    
-        const fTasks = tasks.filter(t => t.id !== id);
-        localStorage.setItem("tasks",JSON.stringify(fTasks));
-        setTasks(fTasks);
-        toast("Task removed",{icon:"☠️"}) ;
+    const handleRemove = async (id) => {
+        try {
+          await deleteDoc(doc(db, "tasks", id));
+          toast("Task removed",{icon:"☠️"}) ;
+        } catch (error) {
+          console.error("Error removing task:", error);
+          toast.error("Failed to remove task");
+        }
     } 
 
     return ( 
