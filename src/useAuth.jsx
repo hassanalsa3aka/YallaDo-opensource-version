@@ -5,11 +5,13 @@ import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 
 const useAuth = () => {
   const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
 
   // Monitor authentication state
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      setAuthLoading(false);
     });
     return () => unsubscribe();
   }, []);
@@ -32,7 +34,7 @@ const useAuth = () => {
     }
   };
 
-  return { user, loginWithGoogle, logout };
+  return { user, authLoading, loginWithGoogle, logout };
 };
 
 export default useAuth;

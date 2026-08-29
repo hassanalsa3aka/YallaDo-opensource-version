@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { db } from "../firebase";
 import { collection, addDoc } from "firebase/firestore";
 
-const CreateTask = ({tasks, setTasks, user}) => {
+const CreateTask = ({tasks, setTasks, user, workspaceId}) => {
    const [task,setTask] =  useState({
     name:"",
     status:"todo",
@@ -19,6 +19,7 @@ const CreateTask = ({tasks, setTasks, user}) => {
       await addDoc(collection(db, "tasks"), {
         ...task,
         userId: user.uid,
+        workspaceId,
         createdAt: new Date()
       });
       toast.success("TASK CREATED");
@@ -34,7 +35,7 @@ const CreateTask = ({tasks, setTasks, user}) => {
 
    
    return (
-         <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 w-full max-w-md px-4 sm:px-0">
+         <form onSubmit={handleSubmit} className="mx-auto my-8 flex flex-col sm:flex-row gap-4 w-full max-w-md px-4 sm:px-0">
         <input type="text" className="border-2 border-slate-400 bg-slate-100 rounded-md h-12 flex-1 px-3"
        value={task.name}
        onChange={(e) => setTask({...task, name: e.target.value})}/>
