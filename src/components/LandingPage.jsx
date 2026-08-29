@@ -24,7 +24,7 @@ const MiniColumn = ({ label, dot, cards }) => (
 );
 
 const BoardPreview = () => (
-  <div className="bg-white border border-slate-200 rounded-lg shadow-sm p-4 rotate-0">
+  <div className="bg-white border border-slate-200 rounded-lg shadow-sm p-4 rotate-0 min-w-0">
     <div className="flex items-center gap-2 mb-3 pb-3 border-b border-slate-100">
       <span className="w-2.5 h-2.5 rounded-full bg-slate-300" />
       <span className="w-2.5 h-2.5 rounded-full bg-slate-300" />
@@ -40,7 +40,7 @@ const BoardPreview = () => (
 );
 
 const TaskDetailPreview = () => (
-  <div className="bg-white border border-slate-200 rounded-lg shadow-sm p-4">
+  <div className="bg-white border border-slate-200 rounded-lg shadow-sm p-4 min-w-0">
     <div className="flex items-center justify-between gap-3 mb-3">
       <h4 className="font-bold text-slate-800 text-sm">Fix onboarding crash</h4>
       <span className="text-[10px] font-bold uppercase tracking-wide bg-purple-100 text-purple-700 rounded-full px-2 py-0.5 shrink-0">

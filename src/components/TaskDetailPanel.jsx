@@ -224,8 +224,8 @@ const TaskDetailPanel = ({ task, isOpen, onClose, members, currentUser, isPerson
           </button>
         </div>
 
-        <div className="flex flex-col md:flex-row flex-1 overflow-hidden mt-4">
-          <div className="flex-1 overflow-y-auto px-5 pb-5 space-y-4">
+        <div className="flex flex-col md:flex-row flex-1 overflow-y-auto md:overflow-hidden mt-4">
+          <div className="flex-1 md:overflow-y-auto px-5 pb-5 space-y-4">
             <div className="flex flex-wrap gap-4">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wide text-slate-500 mb-1">Status</label>
@@ -254,7 +254,7 @@ const TaskDetailPanel = ({ task, isOpen, onClose, members, currentUser, isPerson
             {!isPersonal && (
               <div className="relative" ref={assigneeMenuRef}>
                 <label className="block text-xs font-bold uppercase tracking-wide text-slate-500 mb-1">Assignees</label>
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 flex-wrap">
                   {assigneeIds.map((userId) => {
                     const member = members.find((m) => m.userId === userId);
                     const name = userId === currentUser.uid ? "You" : member?.displayName || "Member";
@@ -338,7 +338,7 @@ const TaskDetailPanel = ({ task, isOpen, onClose, members, currentUser, isPerson
             <div className="px-4 py-3 border-b border-slate-200">
               <h4 className="text-sm font-bold text-slate-700">Comments</h4>
             </div>
-            <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 min-h-[160px]">
+            <div className="flex-1 md:overflow-y-auto px-4 py-3 space-y-3 min-h-[160px]">
               {commentsLoading ? (
                 <div className="space-y-3">
                   {[1, 2, 3].map((i) => (

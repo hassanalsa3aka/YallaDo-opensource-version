@@ -31,7 +31,7 @@ const WorkspaceMembers = ({ members, currentUserId, isOwner, onInvite, onRemoveM
       <span className="text-xs text-slate-500">
         {members.length} {members.length === 1 ? "person" : "people"} with access
       </span>
-      <button onClick={onInvite} className="ml-auto bg-slate-700 text-white rounded-md px-4 py-2 text-sm font-semibold">
+      <button onClick={onInvite} className="w-full sm:w-auto sm:ml-auto bg-slate-700 text-white rounded-md px-4 py-2 text-sm font-semibold">
         Invite members
       </button>
     </div>

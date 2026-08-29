@@ -81,7 +81,7 @@ const addItemToSection = async (id)=>{
 };
 
     return ( 
- <div ref={drop} className={`w-64 rounded-md p-2 ${isOver ?"bg-slate-200":""}`}>
+ <div ref={drop} className={`w-full md:w-64 rounded-md p-2 ${isOver ?"bg-slate-200":""}`}>
   <Header text={text} bg={bg} count={tasksToMap.length}/> 
   
   {tasksToMap.length > 0 && tasksToMap.map(task => <Task key={task.id} task={task}

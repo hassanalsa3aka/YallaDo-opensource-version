@@ -17,7 +17,6 @@ import {
   arrayRemove,
   arrayUnion,
   collection,
-  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -284,14 +283,16 @@ function App() {
     if (!window.confirm(`Remove ${member.displayName || "this person"} from ${selectedWorkspace.name}?`)) return;
 
     try {
-      await updateDoc(doc(db, "workspaces", selectedWorkspace.id), {
+      const batch = writeBatch(db);
+      batch.update(doc(db, "workspaces", selectedWorkspace.id), {
         memberIds: arrayRemove(member.userId),
       });
-      await deleteDoc(doc(db, "workspaceMembers", member.id));
+      batch.delete(doc(db, "workspaceMembers", member.id));
+      await batch.commit();
       toast.success(`${member.displayName || "Member"} removed from workspace`);
     } catch (error) {
       console.error("Remove member error:", error);
-      toast.error("Failed to remove member.");
+      toast.error(`Failed to remove member${error.code ? ` (${error.code})` : ""}.`);
     }
   };
 
@@ -375,10 +376,11 @@ function App() {
           // Login button with Google logo
           <button
             onClick={loginWithGoogle}
-            className="bg-white text-black px-4 py-2 rounded-md flex items-center gap-2"
+            className="bg-white text-black px-3 py-2 sm:px-4 rounded-md flex items-center gap-2 text-sm sm:text-base shrink-0"
           >
-            <img src={googleLogo} alt="Google Logo" className="w-10 h-8" />
-            Login with Google
+            <img src={googleLogo} alt="Google Logo" className="w-6 h-6 sm:w-10 sm:h-8" />
+            <span className="hidden sm:inline">Login with Google</span>
+            <span className="sm:hidden">Login</span>
           </button>
         )}
       </header>
@@ -394,7 +396,7 @@ function App() {
             </div>
             <div className="flex flex-col md:flex-row justify-center gap-8 md:gap-16">
               {["Todo", "In Progress", "Closed"].map((label) => (
-                <div key={label} className="w-64">
+                <div key={label} className="w-full md:w-64">
                   <div className="h-12 rounded-md bg-slate-200 animate-pulse mb-4" />
                   <div className="h-16 rounded-md bg-slate-200/70 animate-pulse mb-3" />
                   <div className="h-16 rounded-md bg-slate-200/70 animate-pulse" />
@@ -451,8 +453,8 @@ function App() {
 
                 {selectedWorkspace && !selectedWorkspace.isPersonal && (
                   membersLoading ? (
-                    <div className="flex items-center gap-3">
-                      <div className="flex gap-2">
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <div className="flex gap-2 flex-wrap">
                         {[1, 2, 3].map((i) => (
                           <div key={i} className="h-7 w-20 rounded-full bg-slate-200 animate-pulse" />
                         ))}
@@ -503,7 +505,7 @@ function App() {
                 {tasksLoading ? (
                   <div className="flex flex-col md:flex-row justify-center gap-8 md:gap-16">
                     {["Todo", "In Progress", "Closed"].map((label) => (
-                      <div key={label} className="w-64">
+                      <div key={label} className="w-full md:w-64">
                         <div className="h-12 rounded-md bg-slate-200 animate-pulse mb-4" />
                         <div className="h-16 rounded-md bg-slate-200/70 animate-pulse mb-3" />
                         <div className="h-16 rounded-md bg-slate-200/70 animate-pulse" />
