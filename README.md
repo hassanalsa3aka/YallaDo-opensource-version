@@ -38,27 +38,17 @@ A modern, intuitive task management application built for personal productivity 
 
 <div align="center">
 
-- ### Dashboard View
-- ![YallaDo Dashboard](public/screenshot-dashboard.png)
--
-- ### Workspace Management
-- ![YallaDo Workspace](public/screenshot-workspace.png)
--
-- ### Task Details & Comments
-- ![YallaDo Task](public/screenshot-task.png)
--
-- ### Mobile Experience
-- ![YallaDo Mobile](public/screenshot-mobile.png)
+### Dashboard View
+![YallaDo Dashboard](public/screenshot-dashboard.png)
 
-+ ### Landing Page
-+ | Light Mode | Dark Mode |
-+ |:---:|:---:|
-+ | ![Landing page light mode](public/screenshot-landing-light.png) | ![Landing page dark mode](public/screenshot-landing-dark.png) |
-+
-+ ### Task Board
-+ | Light Mode | Dark Mode |
-+ |:---:|:---:|
-+ | ![Task board light mode](public/screenshot-app-light.png) | ![Task board dark mode](public/screenshot-app-dark.png) |
+### Workspace Management
+![YallaDo Workspace](public/screenshot-workspace.png)
+
+### Task Details & Comments
+![YallaDo Task](public/screenshot-task.png)
+
+### Mobile Experience
+![YallaDo Mobile](public/screenshot-mobile.png)
 
 </div>
 
