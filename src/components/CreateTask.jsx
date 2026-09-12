@@ -35,12 +35,13 @@ const CreateTask = ({tasks, setTasks, user, workspaceId}) => {
 
    
    return (
-         <form onSubmit={handleSubmit} className="mx-auto my-8 flex flex-col sm:flex-row gap-4 w-full max-w-md px-4 sm:px-0">
-        <input type="text" className="border-2 border-slate-400 bg-slate-100 rounded-md h-12 flex-1 px-3"
+         <form onSubmit={handleSubmit} className="mx-auto mb-10 flex flex-col sm:flex-row gap-3 w-full max-w-md px-4 sm:px-0">
+        <input type="text" placeholder="Add a task..."
+       className="border-2 border-line-strong bg-ink-raised text-text placeholder:text-text-muted rounded-sm h-12 flex-1 px-4 font-sans focus:border-accent transition-colors duration-200"
        value={task.name}
        onChange={(e) => setTask({...task, name: e.target.value})}/>
-        
-        <button className="bg-cyan-500 rounded-md px-4 h-12 text-white">
+
+        <button className="bg-accent hover:bg-accent-dim text-accent-ink rounded-sm px-5 h-12 font-semibold border-2 border-accent shadow-card transition-all duration-200 ease-spring hover:-translate-y-0.5 hover:shadow-card-hover active:translate-y-0 active:shadow-none">
             Create
             </button>
     </form>

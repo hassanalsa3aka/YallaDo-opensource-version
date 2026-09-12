@@ -55,17 +55,20 @@ const   Section =({status,tasks,setTasks,todos,inProgress,closed,onOpenTask}) =>
  
  
     let text = "Todo";
- let bg = "bg-slate-500";
+ let dot = "bg-stone";
+ let edge = "border-l-stone";
  let tasksToMap = todos;
- 
+
  if(status === "inProgress"){
     text = "In Progress";
-    bg = "bg-purple-500";
+    dot = "bg-accent";
+    edge = "border-l-accent";
     tasksToMap = inProgress;
  }
  if(status === "closed"){
     text = "Closed";
-    bg = "bg-green-500";
+    dot = "bg-jade";
+    edge = "border-l-jade";
     tasksToMap = closed;
  }
 
@@ -80,12 +83,18 @@ const addItemToSection = async (id)=>{
    }
 };
 
-    return ( 
- <div ref={drop} className={`w-full md:w-64 rounded-md p-2 ${isOver ?"bg-slate-200":""}`}>
-  <Header text={text} bg={bg} count={tasksToMap.length}/> 
-  
+    return (
+ <div ref={drop} className={`w-full md:w-64 rounded-sm p-2 border-2 transition-colors duration-200 ${isOver ? "border-accent bg-accent-soft" : "border-transparent"}`}>
+  <Header text={text} dot={dot} count={tasksToMap.length}/>
+
+  {tasksToMap.length === 0 && (
+    <div className="mt-4 border-2 border-dashed border-line rounded-sm py-6 text-center text-xs font-mono text-text-muted">
+      No tasks yet
+    </div>
+  )}
+
   {tasksToMap.length > 0 && tasksToMap.map(task => <Task key={task.id} task={task}
-    tasks={tasks} setTasks={setTasks} onOpenTask={onOpenTask}
+    tasks={tasks} setTasks={setTasks} onOpenTask={onOpenTask} edge={edge}
   />) }
 
  </div>
@@ -93,17 +102,20 @@ const addItemToSection = async (id)=>{
 };
 
 
-const  Header =({text,bg,count}) => {
-    return ( 
-    <div className={`${bg} flex items-center h-12 pl-4 rounded-md uppercase text-sm text-white`}>
-    {text}
-    <div className="ml-2 bg-white w-5 h-5 text-black rounded-full flex items-center justify-center">{count}</div>
+const  Header =({text,dot,count}) => {
+    return (
+    <div className="flex items-center justify-between h-11 px-1 border-b-2 border-line-strong uppercase text-xs font-mono font-semibold tracking-wide text-text-muted">
+    <span className="flex items-center gap-2">
+      <span className={`w-2 h-2 rounded-full ${dot}`} />
+      {text}
+    </span>
+    <span className="bg-transparent border border-line-strong text-text-muted w-6 h-6 rounded-full flex items-center justify-center text-[11px]">{count}</span>
     </div>
     );
    };
 
 
-   const  Task  =({task,tasks,setTasks,onOpenTask}) => {
+   const  Task  =({task,tasks,setTasks,onOpenTask,edge}) => {
 
     const [{ isDragging }, drag] = useDrag(() => ({
         type: "task",
@@ -127,11 +139,11 @@ const  Header =({text,bg,count}) => {
     <div
       ref={drag}
       onClick={() => onOpenTask?.(task.id)}
-      className={`relative p-4 pr-14 mt-8 shadow-md rounded-md cursor-pointer ${isDragging ? "optacity-25" : "opacit-100"}`}
+      className={`group relative bg-paper border-2 border-ink-900 ${edge} border-l-[6px] p-4 pr-16 mt-4 rounded-sm shadow-card cursor-pointer transition-all duration-200 ease-spring hover:-translate-y-0.5 hover:shadow-card-hover ${isDragging ? "opacity-30" : "opacity-100"}`}
     >
-    <p>{task.name}</p>
+    <p className="font-medium text-ink-900 leading-snug break-words">{task.name}</p>
     <button
-      className="absolute bottom-1 right-8 text-slate-400 hover:text-cyan-600"
+      className="absolute bottom-2.5 right-9 text-ink-900/40 hover:text-accent-dim sm:opacity-0 sm:group-hover:opacity-100 opacity-100 focus-visible:opacity-100 transition-opacity duration-200"
       aria-label="Edit task"
       onClick={(event) => { event.stopPropagation(); onOpenTask?.(task.id); }}
     >
@@ -140,11 +152,11 @@ const  Header =({text,bg,count}) => {
 </svg>
     </button>
     <button
-      className="absolute bottom-1 right-1 text-slate-400 hover:text-red-500"
+      className="absolute bottom-2.5 right-2.5 text-ink-900/40 hover:text-red-600 sm:opacity-0 sm:group-hover:opacity-100 opacity-100 focus-visible:opacity-100 transition-opacity duration-200"
       aria-label="Delete task"
       onClick={(event) => { event.stopPropagation(); handleRemove(task.id); }}
     >
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
   <path strokeLinecap="round" strokeLinejoin="round" d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
 </svg>
 

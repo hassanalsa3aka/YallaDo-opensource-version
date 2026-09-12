@@ -29,8 +29,13 @@ const TaskDetailPanel = ({ task, isOpen, onClose, members, currentUser, isPerson
   const [commentsLoading, setCommentsLoading] = useState(true);
   const [commentText, setCommentText] = useState("");
   const [isAssigneeMenuOpen, setIsAssigneeMenuOpen] = useState(false);
+  const [failedImages, setFailedImages] = useState(new Set());
   const commentsEndRef = useRef(null);
   const assigneeMenuRef = useRef(null);
+
+  const handleImageError = (imageId) => {
+    setFailedImages((prev) => new Set(prev).add(imageId));
+  };
 
   useEffect(() => {
     setTitle(task?.name || "");
@@ -206,33 +211,33 @@ const TaskDetailPanel = ({ task, isOpen, onClose, members, currentUser, isPerson
 
   return (
     <div
-      className="fixed inset-0 bg-slate-700/40 flex items-center justify-center p-4 z-30"
+      className="fixed inset-0 bg-ink-overlay z-30 animate-fade-in"
       onClick={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <div className="bg-white rounded-lg w-full max-w-3xl max-h-[90vh] shadow-lg flex flex-col overflow-hidden">
-        <div className="flex items-start justify-between gap-3 px-5 pt-5">
+      <div className="fixed inset-y-0 right-0 w-full sm:w-[92vw] md:w-[46rem] max-w-full bg-paper border-l-2 border-ink-900 shadow-panel flex flex-col animate-slide-in-right">
+        <div className="flex items-start justify-between gap-3 px-5 sm:px-6 pt-5">
           <input
             value={title}
             onChange={(event) => setTitle(event.target.value)}
             onBlur={saveTitle}
-            className="text-xl font-bold text-slate-800 w-full border-none focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded-md px-1 -ml-1"
+            className="font-display text-xl font-bold text-ink-900 w-full border-none bg-transparent focus:outline-none focus-visible:shadow-focus rounded-sm px-1 -ml-1"
           />
-          <button onClick={onClose} aria-label="Close" className="text-slate-400 hover:text-slate-600 text-2xl leading-none px-1">
+          <button onClick={onClose} aria-label="Close" className="text-ink-900/40 hover:text-ink-900 text-2xl leading-none px-1 shrink-0">
             &times;
           </button>
         </div>
 
         <div className="flex flex-col md:flex-row flex-1 overflow-y-auto md:overflow-hidden mt-4">
-          <div className="flex-1 md:overflow-y-auto px-5 pb-5 space-y-4">
+          <div className="flex-1 md:overflow-y-auto px-5 sm:px-6 pb-6 space-y-5">
             <div className="flex flex-wrap gap-4">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wide text-slate-500 mb-1">Status</label>
+                <label className="block text-xs font-mono font-semibold uppercase tracking-wide text-text-faint mb-1.5">Status</label>
                 <select
                   value={task.status}
                   onChange={(event) => updateStatus(event.target.value)}
-                  className="border border-slate-300 rounded-md px-3 py-1.5 text-sm text-slate-700 bg-slate-50"
+                  className="border-2 border-paper-line rounded-sm px-3 py-1.5 text-sm text-ink-900 bg-paper-dim focus:border-accent transition-colors duration-200"
                 >
                   {STATUS_OPTIONS.map((option) => (
                     <option key={option.value} value={option.value}>{option.label}</option>
@@ -241,19 +246,19 @@ const TaskDetailPanel = ({ task, isOpen, onClose, members, currentUser, isPerson
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wide text-slate-500 mb-1">Due date</label>
+                <label className="block text-xs font-mono font-semibold uppercase tracking-wide text-text-faint mb-1.5">Due date</label>
                 <input
                   type="date"
                   value={dueDate}
                   onChange={(event) => updateDueDate(event.target.value)}
-                  className="border border-slate-300 rounded-md px-3 py-1.5 text-sm text-slate-700 bg-slate-50"
+                  className="border-2 border-paper-line rounded-sm px-3 py-1.5 text-sm text-ink-900 bg-paper-dim focus:border-accent transition-colors duration-200"
                 />
               </div>
             </div>
 
             {!isPersonal && (
               <div className="relative" ref={assigneeMenuRef}>
-                <label className="block text-xs font-bold uppercase tracking-wide text-slate-500 mb-1">Assignees</label>
+                <label className="block text-xs font-mono font-semibold uppercase tracking-wide text-text-faint mb-1.5">Assignees</label>
                 <div className="flex items-center gap-1.5 flex-wrap">
                   {assigneeIds.map((userId) => {
                     const member = members.find((m) => m.userId === userId);
@@ -262,10 +267,15 @@ const TaskDetailPanel = ({ task, isOpen, onClose, members, currentUser, isPerson
                       <div key={userId} className="relative group">
                         <div
                           title={name}
-                          className="w-8 h-8 rounded-full bg-slate-200 text-slate-600 text-[10px] font-bold flex items-center justify-center overflow-hidden"
+                          className="w-8 h-8 rounded-full bg-ink-900 text-paper text-[10px] font-bold flex items-center justify-center overflow-hidden border-2 border-paper"
                         >
-                          {member?.photoURL ? (
-                            <img src={member.photoURL} alt={name} className="w-full h-full object-cover" />
+                          {member?.photoURL && !failedImages.has(`assignee-${userId}`) ? (
+                            <img 
+                              src={member.photoURL} 
+                              alt={name} 
+                              className="w-full h-full object-cover" 
+                              onError={() => handleImageError(`assignee-${userId}`)}
+                            />
                           ) : (
                             initials(name)
                           )}
@@ -273,7 +283,7 @@ const TaskDetailPanel = ({ task, isOpen, onClose, members, currentUser, isPerson
                         <button
                           onClick={() => removeAssignee(userId)}
                           aria-label={`Remove ${name} from task`}
-                          className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-slate-600 text-white text-[10px] leading-none flex items-center justify-center opacity-0 group-hover:opacity-100"
+                          className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-red-600 text-white text-[10px] leading-none flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                         >
                           &times;
                         </button>
@@ -283,16 +293,16 @@ const TaskDetailPanel = ({ task, isOpen, onClose, members, currentUser, isPerson
                   <button
                     onClick={() => setIsAssigneeMenuOpen((open) => !open)}
                     aria-label="Add assignee"
-                    className="w-8 h-8 rounded-full border border-dashed border-slate-400 text-slate-500 hover:border-cyan-600 hover:text-cyan-600 flex items-center justify-center text-base leading-none"
+                    className="w-8 h-8 rounded-full border-2 border-dashed border-ink-900/30 text-ink-900/50 hover:border-accent hover:text-accent-dim flex items-center justify-center text-base leading-none transition-colors duration-200"
                   >
                     +
                   </button>
                 </div>
 
                 {isAssigneeMenuOpen && (
-                  <div className="absolute z-10 mt-1 w-48 bg-white border border-slate-200 rounded-md shadow-lg py-1">
+                  <div className="absolute z-10 mt-1 w-52 bg-paper border-2 border-ink-900 rounded-sm shadow-card-lg py-1">
                     {members.filter((member) => !assigneeIds.includes(member.userId)).length === 0 && (
-                      <p className="text-xs text-slate-400 px-3 py-1.5">Everyone is already assigned.</p>
+                      <p className="text-xs text-text-faint px-3 py-1.5">Everyone is already assigned.</p>
                     )}
                     {members
                       .filter((member) => !assigneeIds.includes(member.userId))
@@ -300,11 +310,16 @@ const TaskDetailPanel = ({ task, isOpen, onClose, members, currentUser, isPerson
                         <button
                           key={member.userId}
                           onClick={() => addAssignee(member.userId)}
-                          className="w-full flex items-center gap-2 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50 text-left"
+                          className="w-full flex items-center gap-2 px-3 py-1.5 text-sm text-ink-900 hover:bg-accent-soft text-left transition-colors duration-200"
                         >
-                          <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-600 text-[10px] font-bold flex items-center justify-center overflow-hidden shrink-0">
-                            {member.photoURL ? (
-                              <img src={member.photoURL} alt={member.displayName || "Member"} className="w-full h-full object-cover" />
+                          <div className="w-6 h-6 rounded-full bg-ink-900 text-paper text-[10px] font-bold flex items-center justify-center overflow-hidden shrink-0">
+                            {member.photoURL && !failedImages.has(`member-${member.userId}`) ? (
+                              <img 
+                                src={member.photoURL} 
+                                alt={member.displayName || "Member"} 
+                                className="w-full h-full object-cover" 
+                                onError={() => handleImageError(`member-${member.userId}`)}
+                              />
                             ) : (
                               initials(member.userId === currentUser.uid ? "You" : member.displayName)
                             )}
@@ -318,59 +333,64 @@ const TaskDetailPanel = ({ task, isOpen, onClose, members, currentUser, isPerson
             )}
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wide text-slate-500 mb-1">Description</label>
+              <label className="block text-xs font-mono font-semibold uppercase tracking-wide text-text-faint mb-1.5">Description</label>
               <textarea
                 value={description}
                 onChange={(event) => setDescription(event.target.value)}
                 onBlur={saveDescription}
                 rows={6}
                 placeholder="Add more detail about this task..."
-                className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm text-slate-700 bg-slate-50 resize-none"
+                className="w-full border-2 border-paper-line rounded-sm px-3 py-2 text-sm text-ink-900 bg-paper-dim placeholder:text-text-faint resize-none focus:border-accent transition-colors duration-200"
               />
             </div>
 
-            <button onClick={handleDelete} className="text-sm font-semibold text-red-600 hover:text-red-700">
+            <button onClick={handleDelete} className="text-sm font-semibold text-red-700 hover:text-red-800">
               Delete task
             </button>
           </div>
 
-          <div className="w-full md:w-72 border-t md:border-t-0 md:border-l border-slate-200 flex flex-col">
-            <div className="px-4 py-3 border-b border-slate-200">
-              <h4 className="text-sm font-bold text-slate-700">Comments</h4>
+          <div className="w-full md:w-72 border-t-2 md:border-t-0 md:border-l-2 border-paper-line flex flex-col shrink-0">
+            <div className="px-4 py-3 border-b-2 border-paper-line">
+              <h4 className="text-xs font-mono font-semibold uppercase tracking-wide text-text-faint">Comments</h4>
             </div>
             <div className="flex-1 md:overflow-y-auto px-4 py-3 space-y-3 min-h-[160px]">
               {commentsLoading ? (
                 <div className="space-y-3">
                   {[1, 2, 3].map((i) => (
                     <div key={i} className="flex gap-2">
-                      <div className="w-7 h-7 rounded-full bg-slate-200 animate-pulse shrink-0" />
+                      <div className="w-7 h-7 rounded-full bg-paper-line animate-pulse shrink-0" />
                       <div className="flex-1 space-y-1.5 pt-0.5">
-                        <div className="h-2.5 w-20 rounded bg-slate-200 animate-pulse" />
-                        <div className="h-3 w-full rounded bg-slate-200/70 animate-pulse" />
+                        <div className="h-2.5 w-20 rounded bg-paper-line animate-pulse" />
+                        <div className="h-3 w-full rounded bg-paper-line/70 animate-pulse" />
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
                 <>
-                  {comments.length === 0 && <p className="text-xs text-slate-400">No comments yet.</p>}
+                  {comments.length === 0 && <p className="text-xs text-text-faint">No comments yet.</p>}
                   {comments.map((comment) => (
                     <div key={comment.id} className="flex gap-2">
-                      <div className="w-7 h-7 rounded-full bg-slate-200 text-slate-600 text-[10px] font-bold flex items-center justify-center overflow-hidden shrink-0">
-                        {comment.photoURL ? (
-                          <img src={comment.photoURL} alt={comment.displayName || "Member"} className="w-full h-full object-cover" />
+                      <div className="w-7 h-7 rounded-full bg-ink-900 text-paper text-[10px] font-bold flex items-center justify-center overflow-hidden shrink-0">
+                        {comment.photoURL && !failedImages.has(`comment-${comment.id}`) ? (
+                          <img 
+                            src={comment.photoURL} 
+                            alt={comment.displayName || "Member"} 
+                            className="w-full h-full object-cover" 
+                            onError={() => handleImageError(`comment-${comment.id}`)}
+                          />
                         ) : (
                           initials(comment.displayName)
                         )}
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-baseline gap-2">
-                          <span className="text-xs font-semibold text-slate-700">
+                          <span className="text-xs font-semibold text-ink-900">
                             {comment.userId === currentUser.uid ? "You" : comment.displayName || "Member"}
                           </span>
-                          <span className="text-[10px] text-slate-400">{formatTimestamp(comment.createdAt)}</span>
+                          <span className="text-[10px] font-mono text-text-faint">{formatTimestamp(comment.createdAt)}</span>
                         </div>
-                        <p className="text-sm text-slate-700 break-words">{comment.text}</p>
+                        <p className="text-sm text-ink-900 break-words">{comment.text}</p>
                       </div>
                     </div>
                   ))}
@@ -378,14 +398,14 @@ const TaskDetailPanel = ({ task, isOpen, onClose, members, currentUser, isPerson
               )}
               <div ref={commentsEndRef} />
             </div>
-            <form onSubmit={sendComment} className="flex gap-2 p-3 border-t border-slate-200">
+            <form onSubmit={sendComment} className="flex gap-2 p-3 border-t-2 border-paper-line">
               <input
                 value={commentText}
                 onChange={(event) => setCommentText(event.target.value)}
                 placeholder="Message the team..."
-                className="flex-1 border border-slate-300 rounded-md px-3 py-1.5 text-sm bg-slate-50"
+                className="flex-1 border-2 border-paper-line rounded-sm px-3 py-1.5 text-sm bg-paper-dim placeholder:text-text-faint focus:border-accent transition-colors duration-200"
               />
-              <button type="submit" className="bg-cyan-600 text-white rounded-md px-3 py-1.5 text-sm font-semibold">
+              <button type="submit" className="bg-accent hover:bg-accent-dim text-accent-ink rounded-sm px-3 py-1.5 text-sm font-semibold transition-colors duration-200">
                 Send
               </button>
             </form>

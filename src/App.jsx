@@ -28,10 +28,20 @@ import {
   where,
   writeBatch,
 } from "firebase/firestore";
-import logo from "./assets/logo.png";
 import googleLogo from "./assets/google.png";
+import Logo from "./components/Logo";
+import ThemeToggle from "./components/ThemeToggle";
+
+const getStoredTheme = () => {
+  try {
+    return localStorage.getItem("theme") === "light" ? "light" : "dark";
+  } catch {
+    return "dark";
+  }
+};
 
 function App() {
+  const [theme, setTheme] = useState(getStoredTheme);
   const [tasks, setTasks] = useState([]);
   const [activeTab, setActiveTab] = useState("my");
   const [workspaces, setWorkspaces] = useState([]);
@@ -50,6 +60,17 @@ function App() {
   const { user, authLoading, loginWithGoogle, logout } = useAuth();
 
   const inviteToken = new URLSearchParams(window.location.search).get("invite");
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    try {
+      localStorage.setItem("theme", theme);
+    } catch {
+      // Private browsing / storage disabled — theme just won't persist across reloads.
+    }
+  }, [theme]);
+
+  const toggleTheme = () => setTheme((current) => (current === "dark" ? "light" : "dark"));
 
   useEffect(() => {
     if (!user) {
@@ -346,83 +367,98 @@ function App() {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <Toaster />
+      <Toaster
+        toastOptions={{
+          className: "!bg-ink-raised !text-text !border !border-line-strong !rounded-sm !shadow-card !font-sans !text-sm",
+          success: { iconTheme: { primary: "#ff5a1f", secondary: "#101012" } },
+          error: { iconTheme: { primary: "#ff5a1f", secondary: "#101012" } },
+        }}
+      />
       <InviteWelcomeModal
         isOpen={!authLoading && !user && !!inviteToken && !isInviteModalDismissed}
         onLogin={loginWithGoogle}
         onDismiss={() => setIsInviteModalDismissed(true)}
       />
-      <header className="bg-slate-600 text-white p-4 flex justify-between items-center w-full">
-        {/* Replace h1 with logo image */}
-        <img src={logo} alt="To-Do App Logo" className="h-8 md:h-12" />
+   <header className="bg-ink text-text px-4 md:px-6 py-4 flex justify-between items-center w-full border-b-2 border-line-strong sticky top-0 z-20">
+        <Logo />
 
         {authLoading ? (
-          <div className="h-9 w-32 rounded-md bg-white/20 animate-pulse" />
+          <div className="flex items-center gap-3">
+            <ThemeToggle theme={theme} onToggle={toggleTheme} />
+            <div className="h-9 w-32 rounded-sm bg-line animate-pulse" />
+          </div>
         ) : user ? (
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
+            <ThemeToggle theme={theme} onToggle={toggleTheme} />
             <img
               src={user.photoURL}
               alt={user.displayName}
-              className="w-8 h-8 rounded-full"
+              className="w-8 h-8 rounded-full border-2 border-line-strong"
             />
             <button
               onClick={logout}
-              className="bg-red-500 px-4 py-2 rounded-md text-white"
+              className="border-2 border-line-strong hover:border-accent hover:text-accent-fg px-3 py-2 md:px-4 rounded-sm text-text text-sm font-semibold transition-colors duration-200"
             >
               Logout
             </button>
           </div>
         ) : (
-          // Login button with Google logo
-          <button
-            onClick={loginWithGoogle}
-            className="bg-white text-black px-3 py-2 sm:px-4 rounded-md flex items-center gap-2 text-sm sm:text-base shrink-0"
-          >
-            <img src={googleLogo} alt="Google Logo" className="w-6 h-6 sm:w-10 sm:h-8" />
-            <span className="hidden sm:inline">Login with Google</span>
-            <span className="sm:hidden">Login</span>
-          </button>
+          <div className="flex items-center gap-2 md:gap-3">
+            <ThemeToggle theme={theme} onToggle={toggleTheme} />
+            <button
+              onClick={loginWithGoogle}
+              className="bg-paper hover:bg-paper-dim text-ink-900 px-3 py-2 sm:px-4 rounded-sm flex items-center gap-2 text-sm sm:text-base font-semibold shrink-0 border-2 border-ink-900 shadow-card transition-all duration-200 ease-spring hover:-translate-y-0.5 hover:shadow-card-hover active:translate-y-0 active:shadow-none"
+            >
+              <img src={googleLogo} alt="" className="w-6 h-6 sm:w-7 sm:h-7 bg-white rounded-full p-1 object-contain" />
+              <span className="hidden sm:inline">Login with Google</span>
+              <span className="sm:hidden">Login</span>
+            </button>
+          </div>
         )}
       </header>
 
-
-      
       {authLoading ? (
-        <div className="bg-slate-100 min-h-screen w-full flex flex-col items-center p-3 gap-8 md:gap-12 pt-10 md:pt-16">
+        <div className="bg-ink min-h-screen w-full flex flex-col items-center p-3 gap-8 md:gap-12 pt-10 md:pt-16">
           <div className="mx-auto w-full max-w-5xl">
             <div className="flex justify-center gap-3 mb-8">
-              <div className="h-11 w-24 rounded-md bg-slate-200 animate-pulse" />
-              <div className="h-11 w-28 rounded-md bg-slate-200 animate-pulse" />
+              <div className="h-11 w-24 rounded-sm bg-line animate-pulse" />
+              <div className="h-11 w-28 rounded-sm bg-line animate-pulse" />
             </div>
             <div className="flex flex-col md:flex-row justify-center gap-8 md:gap-16">
               {["Todo", "In Progress", "Closed"].map((label) => (
                 <div key={label} className="w-full md:w-64">
-                  <div className="h-12 rounded-md bg-slate-200 animate-pulse mb-4" />
-                  <div className="h-16 rounded-md bg-slate-200/70 animate-pulse mb-3" />
-                  <div className="h-16 rounded-md bg-slate-200/70 animate-pulse" />
+                  <div className="h-12 rounded-sm bg-line animate-pulse mb-4" />
+                  <div className="h-16 rounded-sm bg-line/70 animate-pulse mb-3" />
+                  <div className="h-16 rounded-sm bg-line/70 animate-pulse" />
                 </div>
               ))}
             </div>
           </div>
         </div>
       ) : user ? (
-        <div className="bg-slate-100 min-h-screen w-full flex flex-col items-center p-3 gap-8 md:gap-12 pt-10 md:pt-16">
+        <div className="bg-ink min-h-screen w-full flex flex-col items-center p-3 gap-8 md:gap-12 pt-10 md:pt-16">
           <div className="mx-auto w-full max-w-5xl">
-            <div className="flex justify-center border-b border-slate-300 gap-2 mb-8">
-              <button onClick={() => setActiveTab("my")} className={`px-5 py-3 font-semibold ${activeTab === "my" ? "border-b-4 border-cyan-500 text-cyan-700" : "text-slate-500"}`}>
+            <div className="flex justify-center gap-1 mb-8 border-2 border-line-strong rounded-sm p-1 w-fit mx-auto">
+              <button
+                onClick={() => setActiveTab("my")}
+                className={`px-5 py-2.5 rounded-sm font-semibold text-sm transition-colors duration-200 ${activeTab === "my" ? "bg-accent text-accent-ink" : "text-text-muted hover:text-text"}`}
+              >
                 My Tasks
               </button>
-              <button onClick={() => setActiveTab("team")} className={`px-5 py-3 font-semibold ${activeTab === "team" ? "border-b-4 border-cyan-500 text-cyan-700" : "text-slate-500"}`}>
+              <button
+                onClick={() => setActiveTab("team")}
+                className={`px-5 py-2.5 rounded-sm font-semibold text-sm transition-colors duration-200 ${activeTab === "team" ? "bg-accent text-accent-ink" : "text-text-muted hover:text-text"}`}
+              >
                 Team Tasks
               </button>
             </div>
 
             {activeTab === "team" && (
-              <div className="pb-5 mb-8 border-b border-slate-300">
+              <div className="pb-6 mb-8 border-b-2 border-line-strong">
                 {workspacesLoading ? (
                   <div className="flex flex-wrap items-center gap-2 mb-4">
                     {[1, 2].map((i) => (
-                      <div key={i} className="h-9 w-28 rounded-md bg-slate-200 animate-pulse" />
+                      <div key={i} className="h-9 w-28 rounded-sm bg-line animate-pulse" />
                     ))}
                   </div>
                 ) : (
@@ -432,7 +468,7 @@ function App() {
                         key={workspace.id}
                         onClick={() => setSelectedWorkspace(workspace)}
                         aria-selected={selectedWorkspace?.id === workspace.id}
-                        className={`rounded-md px-4 py-2 border text-sm font-semibold ${selectedWorkspace?.id === workspace.id ? "bg-cyan-600 text-white border-cyan-600" : "bg-slate-50 border-slate-300 text-slate-700"}`}
+                        className={`rounded-sm px-4 py-2 border-2 text-sm font-semibold transition-colors duration-200 ${selectedWorkspace?.id === workspace.id ? "bg-accent text-accent-ink border-accent" : "bg-transparent border-line-strong text-text-muted hover:text-text hover:border-text-muted"}`}
                       >
                         {workspace.name}
                       </button>
@@ -440,7 +476,7 @@ function App() {
                     <button
                       onClick={() => setIsWorkspaceModalOpen(true)}
                       aria-label="Create workspace"
-                      className="w-9 h-9 flex items-center justify-center rounded-md border border-dashed border-slate-400 text-slate-500 hover:border-cyan-600 hover:text-cyan-600 text-lg leading-none"
+                      className="w-9 h-9 flex items-center justify-center rounded-sm border-2 border-dashed border-line-strong text-text-faint hover:border-accent hover:text-accent-fg text-lg leading-none transition-colors duration-200"
                     >
                       +
                     </button>
@@ -448,7 +484,7 @@ function App() {
                 )}
 
                 {!workspacesLoading && teamWorkspaces.length === 0 && (
-                  <p className="text-slate-500 text-sm mb-2">No workspaces yet — click + to create one.</p>
+                  <p className="text-text-muted text-sm mb-2">No workspaces yet — click + to create one.</p>
                 )}
 
                 {selectedWorkspace && !selectedWorkspace.isPersonal && (
@@ -456,10 +492,10 @@ function App() {
                     <div className="flex items-center gap-3 flex-wrap">
                       <div className="flex gap-2 flex-wrap">
                         {[1, 2, 3].map((i) => (
-                          <div key={i} className="h-7 w-20 rounded-full bg-slate-200 animate-pulse" />
+                          <div key={i} className="h-7 w-20 rounded-full bg-line animate-pulse" />
                         ))}
                       </div>
-                      <div className="h-3 w-24 rounded bg-slate-200 animate-pulse" />
+                      <div className="h-3 w-24 rounded bg-line animate-pulse" />
                     </div>
                   ) : (
                     <WorkspaceMembers
@@ -475,7 +511,7 @@ function App() {
                 {selectedWorkspace && !selectedWorkspace.isPersonal && selectedWorkspace.ownerId === user.uid && (
                   <button
                     onClick={() => setWorkspaceToDelete(selectedWorkspace)}
-                    className="mt-3 text-xs font-semibold text-red-500 hover:text-red-600"
+                    className="mt-4 text-xs font-mono font-semibold uppercase tracking-wide text-accent-fg/80 hover:text-accent-fg"
                   >
                     Delete workspace
                   </button>
@@ -500,15 +536,15 @@ function App() {
 
             {activeWorkspace ? (
               <>
-                <h1 className="text-center text-2xl font-bold text-slate-700 mb-5">{activeWorkspace.name}</h1>
+                <h1 className="text-center font-display text-3xl font-bold text-text mb-6 text-balance">{activeWorkspace.name}</h1>
                 <CreateTask tasks={tasks} setTasks={setTasks} user={user} workspaceId={activeWorkspace.id} />
                 {tasksLoading ? (
                   <div className="flex flex-col md:flex-row justify-center gap-8 md:gap-16">
                     {["Todo", "In Progress", "Closed"].map((label) => (
                       <div key={label} className="w-full md:w-64">
-                        <div className="h-12 rounded-md bg-slate-200 animate-pulse mb-4" />
-                        <div className="h-16 rounded-md bg-slate-200/70 animate-pulse mb-3" />
-                        <div className="h-16 rounded-md bg-slate-200/70 animate-pulse" />
+                        <div className="h-12 rounded-sm bg-line animate-pulse mb-4" />
+                        <div className="h-16 rounded-sm bg-line/70 animate-pulse mb-3" />
+                        <div className="h-16 rounded-sm bg-line/70 animate-pulse" />
                       </div>
                     ))}
                   </div>
@@ -517,7 +553,7 @@ function App() {
                 )}
               </>
             ) : (
-              <p className="text-slate-600">Preparing your workspace...</p>
+              <p className="text-text-muted text-center">Preparing your workspace...</p>
             )}
           </div>
 

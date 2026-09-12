@@ -15,13 +15,13 @@ const InviteWelcomeModal = ({ isOpen, onLogin, onDismiss }) => {
 
   return (
     <div
-      className="fixed inset-0 bg-slate-700/40 flex items-center justify-center p-5 z-40"
+      className="fixed inset-0 bg-ink-overlay flex items-center justify-center p-5 z-40 animate-fade-in"
       onClick={(event) => {
         if (event.target === event.currentTarget) onDismiss();
       }}
     >
-      <div className="bg-white rounded-lg w-full max-w-sm p-6 shadow-lg text-center">
-        <div className="w-12 h-12 rounded-full bg-cyan-50 text-cyan-700 flex items-center justify-center mx-auto mb-4">
+      <div className="bg-paper border-2 border-ink-900 rounded-md w-full max-w-sm p-6 shadow-card-lg text-center animate-pop-in">
+        <div className="w-12 h-12 rounded-sm bg-accent-soft text-accent-dim flex items-center justify-center mx-auto mb-4 border-2 border-ink-900">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
             <path
               strokeLinecap="round"
@@ -30,18 +30,18 @@ const InviteWelcomeModal = ({ isOpen, onLogin, onDismiss }) => {
             />
           </svg>
         </div>
-        <h3 className="text-lg font-bold text-slate-800 mb-2">You&apos;ve been invited to a workspace</h3>
-        <p className="text-sm text-slate-500 mb-5">
+        <h3 className="font-display text-lg font-bold text-ink-900 mb-2">You&apos;ve been invited to a workspace</h3>
+        <p className="text-sm text-text-faint mb-5">
           Sign in with Google to join and start collaborating on shared tasks.
         </p>
         <button
           onClick={onLogin}
-          className="w-full inline-flex items-center justify-center gap-3 bg-cyan-600 hover:bg-cyan-700 text-white font-semibold rounded-md px-6 py-3 mb-3"
+          className="w-full inline-flex items-center justify-center gap-3 bg-accent hover:bg-accent-dim text-accent-ink font-semibold rounded-sm px-6 py-3 mb-3 border-2 border-ink-900 transition-colors duration-200"
         >
-          <img src={googleLogo} alt="" className="w-6 h-6 bg-white rounded-full p-0.5" />
+          <img src={googleLogo} alt="" className="w-6 h-6 bg-white rounded-full p-1 object-contain" />
           Continue with Google
         </button>
-        <button onClick={onDismiss} className="text-xs text-slate-400 hover:text-slate-600">
+        <button onClick={onDismiss} className="text-xs font-mono text-text-faint hover:text-ink-900">
           Maybe later
         </button>
       </div>

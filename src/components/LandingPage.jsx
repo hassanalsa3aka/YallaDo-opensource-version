@@ -1,21 +1,21 @@
 import googleLogo from "../assets/google.png";
-import logo from "../assets/logo.png";
+import Logo from "./Logo";
 
 const CheckIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 text-cyan-600 shrink-0">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 text-accent-fg shrink-0">
     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
   </svg>
 );
 
 const MiniColumn = ({ label, dot, cards }) => (
-  <div className="flex-1 min-w-[92px] bg-slate-50 border border-slate-200 rounded-md p-2">
-    <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide text-slate-500 mb-2">
+  <div className="flex-1 min-w-[100px] bg-ink-900 border border-ink-900 rounded-sm p-2">
+    <div className="flex items-center gap-1.5 text-[10px] font-mono font-medium uppercase tracking-wide text-text-muted mb-2">
       <span className={`w-1.5 h-1.5 rounded-full ${dot}`} />
       {label}
     </div>
     <div className="space-y-1.5">
       {cards.map((card) => (
-        <div key={card} className="bg-white border border-slate-200 rounded px-2 py-1.5 text-[11px] text-slate-600 shadow-sm">
+        <div key={card} className="bg-paper border border-paper-line rounded-sm px-2 py-1.5 text-[11px] text-ink-900 shadow-[2px_2px_0_0_rgba(19,19,17,0.15)]">
           {card}
         </div>
       ))}
@@ -24,35 +24,40 @@ const MiniColumn = ({ label, dot, cards }) => (
 );
 
 const BoardPreview = () => (
-  <div className="bg-white border border-slate-200 rounded-lg shadow-sm p-4 rotate-0 min-w-0">
-    <div className="flex items-center gap-2 mb-3 pb-3 border-b border-slate-100">
-      <span className="w-2.5 h-2.5 rounded-full bg-slate-300" />
-      <span className="w-2.5 h-2.5 rounded-full bg-slate-300" />
-      <span className="w-2.5 h-2.5 rounded-full bg-slate-300" />
-      <span className="text-xs text-slate-400 ml-2">Marketing Launch</span>
+  <div className="relative">
+    <div className="absolute z-10 top-3 right-3 font-mono text-[11px] uppercase tracking-wider text-accent bg-ink-900 border border-accent/50 rounded-sm px-2 py-1 rotate-2 hidden sm:block">
+      live board
     </div>
-    <div className="flex gap-3 overflow-x-auto pb-1">
-      <MiniColumn label="Todo" dot="bg-slate-400" cards={["Draft launch email", "Line up influencers"]} />
-      <MiniColumn label="In progress" dot="bg-purple-500" cards={["Landing page copy"]} />
-      <MiniColumn label="Closed" dot="bg-green-500" cards={["Confirm budget"]} />
+    <div className="bg-paper border-2 border-ink-900 rounded-md shadow-card-lg p-4 sm:p-5 -rotate-1">
+      <div className="flex items-center gap-2 mb-3 pb-3 border-b border-paper-line">
+        <span className="w-2.5 h-2.5 rounded-full bg-stone" />
+        <span className="w-2.5 h-2.5 rounded-full bg-accent" />
+        <span className="w-2.5 h-2.5 rounded-full bg-jade" />
+        <span className="text-xs font-mono text-text-faint ml-2">marketing-launch.board</span>
+      </div>
+      <div className="flex gap-3 overflow-x-auto pb-1">
+        <MiniColumn label="Todo" dot="bg-stone" cards={["Draft launch email", "Line up influencers"]} />
+        <MiniColumn label="In progress" dot="bg-accent" cards={["Landing page copy"]} />
+        <MiniColumn label="Closed" dot="bg-jade" cards={["Confirm budget"]} />
+      </div>
     </div>
   </div>
 );
 
 const TaskDetailPreview = () => (
-  <div className="bg-white border border-slate-200 rounded-lg shadow-sm p-4 min-w-0">
+  <div className="bg-paper border-2 border-ink-900 rounded-md shadow-card-lg p-5 rotate-1">
     <div className="flex items-center justify-between gap-3 mb-3">
-      <h4 className="font-bold text-slate-800 text-sm">Fix onboarding crash</h4>
-      <span className="text-[10px] font-bold uppercase tracking-wide bg-purple-100 text-purple-700 rounded-full px-2 py-0.5 shrink-0">
+      <h4 className="font-display font-bold text-ink-900 text-base">Fix onboarding crash</h4>
+      <span className="text-[10px] font-mono font-semibold uppercase tracking-wide bg-accent-soft text-accent-deep rounded-sm px-2 py-0.5 shrink-0">
         In progress
       </span>
     </div>
-    <div className="flex items-center gap-4 mb-3 text-xs text-slate-500">
+    <div className="flex items-center gap-4 mb-3 text-xs text-text-faint font-mono">
       <div className="flex">
         {["AK", "DT"].map((who) => (
           <div
             key={who}
-            className="w-5 h-5 -ml-1 first:ml-0 rounded-full bg-cyan-100 text-cyan-700 text-[9px] font-bold flex items-center justify-center border border-white"
+            className="w-6 h-6 -ml-1.5 first:ml-0 rounded-full bg-ink-900 text-paper text-[9px] font-bold flex items-center justify-center border-2 border-paper"
           >
             {who}
           </div>
@@ -60,14 +65,14 @@ const TaskDetailPreview = () => (
       </div>
       <span>Due Sep 3</span>
     </div>
-    <div className="border-t border-slate-100 pt-3 space-y-2">
+    <div className="border-t border-paper-line pt-3 space-y-2">
       <div className="flex gap-2">
-        <div className="w-5 h-5 rounded-full bg-slate-200 shrink-0" />
-        <div className="bg-slate-50 rounded px-2 py-1 text-xs text-slate-600">Repro&apos;d on iOS 17 only</div>
+        <div className="w-5 h-5 rounded-full bg-ink-900/10 shrink-0" />
+        <div className="bg-paper-dim rounded-sm px-2 py-1 text-xs text-ink-900">Repro&apos;d on iOS 17 only</div>
       </div>
       <div className="flex gap-2">
-        <div className="w-5 h-5 rounded-full bg-slate-200 shrink-0" />
-        <div className="bg-slate-50 rounded px-2 py-1 text-xs text-slate-600">Pushed a fix, can you verify?</div>
+        <div className="w-5 h-5 rounded-full bg-ink-900/10 shrink-0" />
+        <div className="bg-paper-dim rounded-sm px-2 py-1 text-xs text-ink-900">Pushed a fix, can you verify?</div>
       </div>
     </div>
   </div>
@@ -125,81 +130,106 @@ const FEATURES = [
   },
 ];
 
+const GoogleButton = ({ onClick, tone = "accent", className = "" }) => {
+  const toneClasses =
+    tone === "accent"
+      ? "bg-accent hover:bg-accent-dim text-accent-ink"
+      : "bg-paper hover:bg-paper-dim text-ink-900";
+  return (
+    <button
+      onClick={onClick}
+      className={`group inline-flex items-center gap-3 font-sans font-semibold rounded-sm pl-3 pr-5 py-3 text-base shadow-card border-2 border-ink-900 transition-all duration-200 ease-spring hover:-translate-y-0.5 hover:shadow-card-hover active:translate-y-0 active:shadow-none ${toneClasses} ${className}`}
+    >
+      <img src={googleLogo} alt="" className="w-6 h-6 bg-white rounded-full p-1 object-contain" />
+      Continue with Google
+    </button>
+  );
+};
+
 const LandingPage = ({ onLogin }) => {
   return (
-    <div className="bg-slate-100 w-full">
-      <section className="max-w-5xl mx-auto px-6 pt-16 md:pt-24 pb-16 grid md:grid-cols-2 gap-12 items-center">
+    <div className="bg-ink w-full overflow-hidden">
+      <section className="relative bg-grain max-w-6xl mx-auto px-6 pt-14 md:pt-20 pb-20 grid md:grid-cols-2 gap-14 items-center">
         <div>
-          <p className="text-xs font-bold uppercase tracking-wide text-cyan-700 mb-3">Personal &amp; team task tracking</p>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-slate-800 leading-tight mb-5 text-balance">
-            One board for your tasks. Another for your team.
+          <p className="inline-flex items-center gap-2 text-xs font-mono font-medium uppercase tracking-[0.15em] text-accent-fg mb-5 border border-accent/40 rounded-full px-3 py-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+            Personal &amp; team task tracking
+          </p>
+          <h1 className="font-display text-5xl md:text-6xl font-bold leading-[1.05] mb-6 text-balance">
+            One board for your tasks.
+            <br />
+            <span className="italic text-accent-fg">Another</span> for your team.
           </h1>
-          <p className="text-slate-600 text-lg mb-8 max-w-md">
+          <p className="text-text-muted text-lg mb-9 max-w-md leading-relaxed">
             Keep a private to-do list for yourself, and open a workspace whenever a project needs more than one
             person — status, assignees, due dates, and comments, all in one place.
           </p>
-          <button
-            onClick={onLogin}
-            className="inline-flex items-center gap-3 bg-cyan-600 hover:bg-cyan-700 text-white font-semibold rounded-md pl-4 pr-6 py-3 text-base shadow-sm"
-          >
-            <img src={googleLogo} alt="" className="w-6 h-6 bg-white rounded-full p-0.5" />
-            Continue with Google
-          </button>
-          <p className="text-xs text-slate-400 mt-3">Free to use. No credit card, no setup — just sign in.</p>
+          <GoogleButton onClick={onLogin} />
+          <p className="text-xs font-mono text-text-muted mt-4">No credit card, no setup — just sign in.</p>
         </div>
 
         <BoardPreview />
       </section>
 
-      <section className="max-w-5xl mx-auto px-6 pb-20">
-        <div className="grid sm:grid-cols-3 gap-6">
-          {FEATURES.map((feature) => (
-            <div key={feature.title} className="bg-white border border-slate-200 rounded-lg p-5">
-              <div className="w-9 h-9 rounded-md bg-cyan-50 text-cyan-700 flex items-center justify-center mb-3">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d={feature.path} />
-                </svg>
+      <section className="max-w-6xl mx-auto px-6 pb-24">
+        <div className="grid sm:grid-cols-3 border-t-2 border-line-strong">
+          {FEATURES.map((feature, index) => (
+            <div
+              key={feature.title}
+              className={`p-6 border-b-2 border-line-strong sm:border-b-0 ${index < FEATURES.length - 1 ? "sm:border-r-2 sm:border-line-strong" : ""}`}
+            >
+              <div className="flex items-center justify-between mb-6">
+                <span className="font-mono text-xs text-text-muted">0{index + 1}</span>
+                <div className="w-9 h-9 rounded-sm bg-accent-soft text-accent-fg flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d={feature.path} />
+                  </svg>
+                </div>
               </div>
-              <h3 className="font-bold text-slate-800 mb-1.5">{feature.title}</h3>
-              <p className="text-sm text-slate-500 leading-relaxed">{feature.description}</p>
+              <h3 className="font-display font-semibold text-xl text-text mb-2">{feature.title}</h3>
+              <p className="text-sm text-text-muted leading-relaxed">{feature.description}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="max-w-5xl mx-auto px-6 pb-20">
-        <div className="text-center mb-10">
-          <p className="text-xs font-bold uppercase tracking-wide text-cyan-700 mb-2">How it works</p>
-          <h2 className="text-2xl md:text-3xl font-extrabold text-slate-800 text-balance">From sign-in to shipped, in three steps</h2>
+      <section className="max-w-6xl mx-auto px-6 pb-24">
+        <div className="mb-12">
+          <p className="text-xs font-mono font-medium uppercase tracking-[0.15em] text-accent-fg mb-3">How it works</p>
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-balance max-w-xl">
+            From sign-in to shipped, in three steps
+          </h2>
         </div>
-        <div className="grid sm:grid-cols-3 gap-8">
+        <div className="grid sm:grid-cols-3 gap-10">
           {STEPS.map((step, index) => (
-            <div key={step.title}>
-              <div className="text-4xl font-extrabold text-slate-300 mb-2">0{index + 1}</div>
-              <h3 className="font-bold text-slate-800 mb-1.5">{step.title}</h3>
-              <p className="text-sm text-slate-500 leading-relaxed">{step.description}</p>
+            <div key={step.title} className="relative pl-0">
+              <div className="font-display text-6xl font-bold text-transparent [-webkit-text-stroke:1.5px_theme(colors.line-strong)] mb-3">
+                0{index + 1}
+              </div>
+              <h3 className="font-semibold text-text mb-2">{step.title}</h3>
+              <p className="text-sm text-text-muted leading-relaxed">{step.description}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="max-w-5xl mx-auto px-6 pb-20 grid md:grid-cols-2 gap-12 items-center">
+      <section className="max-w-6xl mx-auto px-6 pb-24 grid md:grid-cols-2 gap-14 items-center">
         <TaskDetailPreview />
         <div>
-          <p className="text-xs font-bold uppercase tracking-wide text-cyan-700 mb-3">Every task, fully detailed</p>
-          <h2 className="text-2xl md:text-3xl font-extrabold text-slate-800 mb-4 text-balance">
+          <p className="text-xs font-mono font-medium uppercase tracking-[0.15em] text-accent-fg mb-3">Every task, fully detailed</p>
+          <h2 className="font-display text-3xl md:text-4xl font-bold mb-6 text-balance">
             Not just a checklist — the whole conversation
           </h2>
-          <ul className="space-y-3">
-            <li className="flex items-start gap-2 text-slate-600">
+          <ul className="space-y-4">
+            <li className="flex items-start gap-3 text-text-muted">
               <CheckIcon />
               Assign more than one person to a task
             </li>
-            <li className="flex items-start gap-2 text-slate-600">
+            <li className="flex items-start gap-3 text-text-muted">
               <CheckIcon />
               Track status, due dates, and a full description
             </li>
-            <li className="flex items-start gap-2 text-slate-600">
+            <li className="flex items-start gap-3 text-text-muted">
               <CheckIcon />
               Discuss the work in comments, right on the task
             </li>
@@ -207,38 +237,35 @@ const LandingPage = ({ onLogin }) => {
         </div>
       </section>
 
-      <section className="max-w-3xl mx-auto px-6 pb-20">
-        <div className="text-center mb-10">
-          <p className="text-xs font-bold uppercase tracking-wide text-cyan-700 mb-2">Questions</p>
-          <h2 className="text-2xl md:text-3xl font-extrabold text-slate-800">Good to know</h2>
+      <section className="max-w-3xl mx-auto px-6 pb-24">
+        <div className="mb-10">
+          <p className="text-xs font-mono font-medium uppercase tracking-[0.15em] text-accent-fg mb-3">Questions</p>
+          <h2 className="font-display text-3xl md:text-4xl font-bold">Good to know</h2>
         </div>
-        <div className="space-y-4">
-          {FAQS.map((faq) => (
-            <div key={faq.q} className="bg-white border border-slate-200 rounded-lg p-5">
-              <h3 className="font-bold text-slate-800 mb-1.5">{faq.q}</h3>
-              <p className="text-sm text-slate-500 leading-relaxed">{faq.a}</p>
+        <div className="border-t-2 border-line-strong">
+          {FAQS.map((faq, index) => (
+            <div key={faq.q} className="py-6 border-b-2 border-line-strong flex gap-5">
+              <span className="font-mono text-xs text-text-muted pt-1 shrink-0">Q{index + 1}</span>
+              <div>
+                <h3 className="font-semibold text-text mb-1.5">{faq.q}</h3>
+                <p className="text-sm text-text-muted leading-relaxed">{faq.a}</p>
+              </div>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="bg-slate-800">
-        <div className="max-w-5xl mx-auto px-6 pt-16 pb-10 text-center">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-3 text-balance">
+      <section className="relative bg-accent bg-grain">
+        <div className="max-w-5xl mx-auto px-6 pt-20 pb-14 text-center">
+          <h2 className="font-display text-3xl md:text-5xl font-bold text-accent-ink mb-4 text-balance">
             Ready to get your tasks out of your head?
           </h2>
-          <p className="text-slate-300 mb-6">Sign in and your personal board is ready in seconds.</p>
-          <button
-            onClick={onLogin}
-            className="inline-flex items-center gap-3 bg-cyan-500 hover:bg-cyan-400 text-slate-900 font-semibold rounded-md pl-4 pr-6 py-3"
-          >
-            <img src={googleLogo} alt="" className="w-6 h-6 bg-white rounded-full p-0.5" />
-            Continue with Google
-          </button>
+          <p className="text-accent-ink/70 mb-8 font-medium">Sign in and your personal board is ready in seconds.</p>
+          <GoogleButton onClick={onLogin} tone="paper" />
         </div>
-        <footer className="max-w-5xl mx-auto px-6 py-6 mt-6 border-t border-slate-700 flex items-center justify-between gap-4">
-          <img src={logo} alt="To-Do" className="h-5" />
-          <span className="text-xs text-slate-400">&copy; {new Date().getFullYear()} To-Do</span>
+        <footer className="max-w-5xl mx-auto px-6 py-6 border-t-2 border-ink-900/15 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <Logo wordClassName="text-accent-ink" markClassName="bg-ink-900 text-accent border border-ink-900/15" />
+          <span className="text-xs font-mono text-accent-ink/70">&copy; {new Date().getFullYear()} YallaDo — built for focused work</span>
         </footer>
       </section>
     </div>
