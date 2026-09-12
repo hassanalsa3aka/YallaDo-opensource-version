@@ -6,7 +6,7 @@
 
 A modern, intuitive task management application built for personal productivity and team collaboration. Organize your work with personal and shared workspaces, real-time task tracking, and seamless team coordination.
 
-![YallaDo Logo](public/favicon.svg)
+<img src="public/favicon.svg" alt="YallaDo Logo" width="96" />
 
 [![React](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react)](https://react.dev)
 [![Vite](https://img.shields.io/badge/Vite-5.4.10-646CFF?logo=vite)](https://vitejs.dev)
@@ -38,17 +38,27 @@ A modern, intuitive task management application built for personal productivity 
 
 <div align="center">
 
-### Dashboard View
-![YallaDo Dashboard](public/screenshot-dashboard.png)
+- ### Dashboard View
+- ![YallaDo Dashboard](public/screenshot-dashboard.png)
+-
+- ### Workspace Management
+- ![YallaDo Workspace](public/screenshot-workspace.png)
+-
+- ### Task Details & Comments
+- ![YallaDo Task](public/screenshot-task.png)
+-
+- ### Mobile Experience
+- ![YallaDo Mobile](public/screenshot-mobile.png)
 
-### Workspace Management
-![YallaDo Workspace](public/screenshot-workspace.png)
-
-### Task Details & Comments
-![YallaDo Task](public/screenshot-task.png)
-
-### Mobile Experience
-![YallaDo Mobile](public/screenshot-mobile.png)
++ ### Landing Page
++ | Light Mode | Dark Mode |
++ |:---:|:---:|
++ | ![Landing page light mode](public/screenshot-landing-light.png) | ![Landing page dark mode](public/screenshot-landing-dark.png) |
++
++ ### Task Board
++ | Light Mode | Dark Mode |
++ |:---:|:---:|
++ | ![Task board light mode](public/screenshot-app-light.png) | ![Task board dark mode](public/screenshot-app-dark.png) |
 
 </div>
 
